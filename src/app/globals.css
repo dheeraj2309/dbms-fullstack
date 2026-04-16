@@ -1,7 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+/* @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap'); */
 
+:root {
+  --cream:       #FAF7F2;
+  --cream-dark:  #F0EAE0;
+  --espresso:    #1C1410;
+  --espresso-2:  #2D1F18;
+  --terracotta:  #C4622D;
+  --sand:        #E8DDD4;
+  --sand-light:  #F5EFE6;
+  --muted:       #8C7B6E;
+  --muted-dark:  #4A3728;
+  --amber-soft:  #E8A87C;
+  --white:       #FFFFFF;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--espresso);
+}
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

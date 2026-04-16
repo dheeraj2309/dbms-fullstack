@@ -8,7 +8,7 @@ const FROM = 'onboarding@resend.dev';
 export async function sendOtpEmail(email: string, otp: string, name: string) {
   const { data, error } = await resend.emails.send({
     from: FROM,
-    to: email,
+    to: 'dheerajw2309@gmail.com',
     subject: 'Your OTP for Student Registration',
     react: OtpEmail({ otp, name }),
   });
