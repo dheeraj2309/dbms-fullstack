@@ -1,22 +1,34 @@
 import ConfirmationEmail from '@/emails/ConfirmationEmail';
 import OtpEmail from '@/emails/Otp';
-import { Resend } from 'resend';
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { render } from '@react-email/render';
+// import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
+// const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM = 'onboarding@resend.dev';
+const FROM = `"Student Portal" <${process.env.GMAIL_USER}>`;
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER, // Your Gmail address
+    pass: process.env.GMAIL_APP_PASS, // Your 16-char App Password
+  },
+});
 
 export async function sendOtpEmail(email: string, otp: string, name: string) {
-  const { data, error } = await resend.emails.send({
-    from: FROM,
-    to: 'dheerajw2309@gmail.com',
-    subject: 'Your OTP for Student Registration',
-    react: OtpEmail({ otp, name }),
-  });
-  if (error) {
-    console.error('Resend Error:', error);
+  try {
+    const emailHtml = await render(OtpEmail({ otp, name }));
+    const options = {
+      from: FROM,
+      to: email, // Changed this back to 'email' so it goes to the user!
+      subject: 'Your OTP for Student Registration',
+      html: emailHtml,
+    };
+    const info = await transporter.sendMail(options);
+    return { data: info, error: null };
+  } catch (error) {
+    console.error('Nodemailer OTP Error:', error);
     return { data: null, error };
   }
-  return { data, error: null };
 }
 
 export async function sendConfirmationEmail(
@@ -27,25 +39,31 @@ export async function sendConfirmationEmail(
   year?: string,
   cgpa?: number
 ) {
-  const { data, error } = await resend.emails.send({
-    from: FROM,
-    to: 'dheerajw2309@gmail.com',
-    subject: 'Registration Confirmed — Student Registration System',
-    react: ConfirmationEmail({
-      name,
-      course,
-      branch,
-      year,
-      cgpa,
-      submittedAt: new Date().toLocaleString('en-IN', {
-        dateStyle: 'long',
-        timeStyle: 'short',
-      }),
-    }),
-  });
-  if (error) {
-    console.error('Resend Error:', error);
+  try {
+    const emailHtml = await render(
+      ConfirmationEmail({
+        name,
+        course,
+        branch,
+        year,
+        cgpa,
+        submittedAt: new Date().toLocaleString('en-IN', {
+          dateStyle: 'long',
+          timeStyle: 'short',
+        }),
+      })
+    );
+    const options = {
+      from: FROM,
+      to: email,
+      subject: 'Registration Confirmed — Student Registration System',
+      html: emailHtml,
+    };
+
+    const info = await transporter.sendMail(options);
+    return { data: info, error: null };
+  } catch (error) {
+    console.error('Nodemailer Confirmation Error:', error);
     return { data: null, error };
   }
-  return { data, error: null };
 }
