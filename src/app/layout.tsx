@@ -39,20 +39,18 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Providers>
-          {children}
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              style: {
-                fontFamily: "'DM Sans', sans-serif",
-                background: 'var(--espresso)',
-                color: 'var(--sand-light)',
-                border: 'none',
-              },
-            }}
-          />
-        </Providers>
+        <Providers>{children}</Providers>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              fontFamily: "'DM Sans', sans-serif",
+              background: 'var(--espresso)',
+              color: 'var(--sand-light)',
+              border: 'none',
+            },
+          }}
+        />
       </body>
     </html>
   );

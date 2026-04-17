@@ -18,9 +18,35 @@
   --white:       #FFFFFF;
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   font-family: 'DM Sans', sans-serif;
   background: var(--cream);
+  color: var(--espresso);
+}
+
+input, select, button, textarea {
+  font-family: 'DM Sans', sans-serif;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--terracotta) !important;
+  box-shadow: 0 0 0 3px rgba(196, 98, 45, 0.08) !important;
+  background: white !important;
+  outline: none;
+}
+/* ScrollBar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--sand); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* Selection */
+::selection {
+  background: rgba(196, 98, 45, 0.15);
   color: var(--espresso);
 }
 @custom-variant dark (&:is(.dark *));

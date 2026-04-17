@@ -29,7 +29,7 @@ export async function sendConfirmationEmail(
 ) {
   const { data, error } = await resend.emails.send({
     from: FROM,
-    to: email,
+    to: 'dheerajw2309@gmail.com',
     subject: 'Registration Confirmed — Student Registration System',
     react: ConfirmationEmail({
       name,

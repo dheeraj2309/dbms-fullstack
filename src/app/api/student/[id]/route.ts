@@ -13,7 +13,7 @@ import { StudentFormSchema } from '@/lib/validations';
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -24,8 +24,9 @@ export async function GET(
     if (session.user.role !== 'ADMIN') {
       return errorResponse('Forbidden', 403);
     }
+    const {id} = await params
     const formData = await prisma.formDetails.findUnique({
-      where: { userId: params.id },
+      where: { userId: id },
       include: { user: { select: { email: true, createdAt: true } } }, //nice
     });
     if (!formData) {
@@ -41,9 +42,10 @@ export async function GET(
 // Both student (own data) and admin (any student) can call this
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await auth();
     if (!session?.user?.id) {
       return errorResponse('Unauthorized', 401);
@@ -51,7 +53,7 @@ export async function PATCH(
     // Students can only edit their own data
     // Admins can edit anyone
     const isAdmin = session.user.role === 'ADMIN';
-    const isOwnData = session.user.id === params.id;
+    const isOwnData = session.user.id === id;
     if (!isAdmin && !isOwnData) {
       return errorResponse('Forbidden', 403);
     }
@@ -63,14 +65,14 @@ export async function PATCH(
     }
     // Check the form exists before updating
     const existing = await prisma.formDetails.findUnique({
-      where: { userId: params.id },
+      where: { userId: id },
     });
     if (!existing) {
       return errorResponse('Form not found', 404);
     }
     // Update
     const updated = await prisma.formDetails.update({
-      where: { userId: params.id },
+      where: { userId: id },
       data: parsed.data,
     });
     return successResponse({ formData: updated });
@@ -82,9 +84,11 @@ export async function PATCH(
 // DELETE → admin only
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // 2. Await the params object to unwrap the 'id'
+    const { id } = await params;
     const session = await auth();
     if (!session?.user?.id) {
       return errorResponse('Unauthorized', 401);
@@ -94,7 +98,7 @@ export async function DELETE(
     }
     // Check exists first
     const existing = await prisma.formDetails.findUnique({
-      where: { userId: params.id },
+      where: { userId: id },
     });
     if (!existing) {
       return errorResponse('Student not found', 404);
@@ -103,7 +107,7 @@ export async function DELETE(
     // also deletes FormDetails automatically
     // But here admin is only deleting form data, not the account
     await prisma.formDetails.delete({
-      where: { userId: params.id },
+      where: { userId: id },
     });
     return successResponse({ message: 'Student data deleted successfully' });
   } catch (error) {

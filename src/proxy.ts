@@ -1,5 +1,5 @@
 // Rule 1 → Already logged in + visiting /login = waste of time, redirect home
-// Rule 2 → Not logged in + visiting protected page = go login first  
+// Rule 2 → Not logged in + visiting protected page = go login first
 // Rule 3 → Logged in but OTP not done = must verify before doing anything
 // Rule 4 → Student trying to sneak into /admin = nope, back to dashboard
 // Rule 5 → Admin visiting /dashboard = wrong place, send to admin dashboard
@@ -22,7 +22,7 @@
 //   const role = session?.user?.role
 
 //   // Define route types
-//   const isAuthRoute = pathname.startsWith("/login") || 
+//   const isAuthRoute = pathname.startsWith("/login") ||
 //                       pathname.startsWith("/verify-otp")
 //   const isStudentRoute = pathname.startsWith("/dashboard")
 //   const isAdminRoute = pathname.startsWith("/admin")
@@ -64,50 +64,50 @@
 //     "/((?!api|_next/static|_next/image|favicon.ico).*)",
 //   ],
 // }
-import NextAuth from "next-auth"
-import { authConfig } from "@/lib/auth.config"  // ← NOT auth.ts
-import { NextResponse } from "next/server"
+import NextAuth from 'next-auth';
+import { authConfig } from '@/lib/auth.config'; // ← NOT auth.ts
+import { NextResponse } from 'next/server';
 
 // Use only the edge-safe config here — no Prisma involved
-const { auth } = NextAuth(authConfig)
+const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
-  const session = req.auth
-  const pathname = req.nextUrl.pathname
+  const session = req.auth;
+  const pathname = req.nextUrl.pathname;
 
-  const isLoggedIn = !!session
-  const isVerified = session?.user?.isEmailVerified
-  const role = session?.user?.role
+  const isLoggedIn = !!session;
+  const isVerified = session?.user?.isEmailVerified;
+  const role = session?.user?.role;
 
-  const isAuthRoute = pathname.startsWith("/login") ||
-                      pathname.startsWith("/verify-otp")
-  const isStudentRoute = pathname.startsWith("/dashboard")
-  const isAdminRoute = pathname.startsWith("/admin")
+  const isAuthRoute =
+    pathname.startsWith('/login') || pathname.startsWith('/verify-otp');
+  const isStudentRoute = pathname.startsWith('/student');
+  const isAdminRoute = pathname.startsWith('/admin');
 
   if (isLoggedIn && isVerified && isAuthRoute) {
-    if (role === "ADMIN") return NextResponse.redirect(new URL("/admin/dashboard", req.url))
-    return NextResponse.redirect(new URL("/dashboard", req.url))
+    if (role === 'ADMIN')
+      return NextResponse.redirect(new URL('/admin/dashboard', req.url));
+    return NextResponse.redirect(new URL('/student/dashboard', req.url));
   }
 
   if (!isLoggedIn && (isStudentRoute || isAdminRoute)) {
-    return NextResponse.redirect(new URL("/login", req.url))
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
   if (isLoggedIn && !isVerified && !isAuthRoute) {
-    return NextResponse.redirect(new URL("/verify-otp", req.url))
+    return NextResponse.redirect(new URL('/verify-otp', req.url));
   }
 
-  if (isLoggedIn && isVerified && isAdminRoute && role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/dashboard", req.url))
+  if (isLoggedIn && isVerified && isAdminRoute && role !== 'ADMIN') {
+    return NextResponse.redirect(new URL('/student/dashboard', req.url));
   }
 
-  if (isLoggedIn && isVerified && isStudentRoute && role === "ADMIN") {
-    return NextResponse.redirect(new URL("/admin/dashboard", req.url))
+  if (isLoggedIn && isVerified && isStudentRoute && role === 'ADMIN') {
+    return NextResponse.redirect(new URL('/admin/dashboard', req.url));
   }
-
-  return NextResponse.next()
-})
+  return NextResponse.next();
+});
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
-}
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+};

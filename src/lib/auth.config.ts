@@ -15,11 +15,14 @@ export const authConfig: NextAuthConfig = {
   },
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user,trigger,session }) {
       if (user) {
         token.id = user.id
         token.role = user.role
         token.isEmailVerified = user.isEmailVerified
+      }
+      if (trigger === "update" && session?.user) {
+        token.isEmailVerified = session.user.isEmailVerified
       }
       return token
     },

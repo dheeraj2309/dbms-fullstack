@@ -90,8 +90,7 @@ export default function ConfirmationEmail({
                 {/* Info box */}
                 <Section className="rounded-xl bg-[#E6F1FB] px-4 py-3">
                   <Text className="m-0 text-sm leading-relaxed text-[#0C447C]">
-                    Need to make changes? Log back in anytime before the
-                    deadline to update your details.
+                    Need to make changes? Log back in anytime update your details.
                   </Text>
                 </Section>
               </Section>
