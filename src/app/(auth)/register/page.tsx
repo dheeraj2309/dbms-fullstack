@@ -69,7 +69,7 @@ export default function RegisterPage() {
     }}>
       {/* Left panel — same as login */}
       <div style={{
-        width: "42%", background: "#1C1410",
+        width: "60%", background: "#1C1410",
         padding: "48px 40px",
         display: "flex", flexDirection: "column",
         justifyContent: "space-between",
@@ -105,7 +105,7 @@ export default function RegisterPage() {
         justifyContent: "center",
         background: "var(--cream)",
       }}>
-        <div style={{ maxWidth: 380 }}>
+        <div style={{ maxWidth: '100vw' }}>
           <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#C4622D", margin: "0 0 10px" }}>
             Get started
           </p>
